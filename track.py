@@ -15,6 +15,8 @@ from pathlib import Path
 import torch
 import torch.backends.cudnn as cudnn
 
+from collections import deque
+
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # yolov5 strongsort root directory
 WEIGHTS = ROOT / 'weights'
@@ -121,6 +123,11 @@ def run(
                 tracker_list[i].model.warmup()
     outputs = [None] * nr_sources
 
+
+    # Array of center points of tracked objects for historical trajectory
+    pts = [deque (maxlen=30) for _ in range(1000)]
+    
+    
     # Run tracking
     #model.warmup(imgsz=(1 if pt else nr_sources, 3, *imgsz))  # warmup
     seen, windows, dt = 0, [], (Profile(), Profile(), Profile(), Profile())

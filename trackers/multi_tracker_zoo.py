@@ -1,7 +1,7 @@
 from trackers.strong_sort.utils.parser import get_config
 from trackers.strong_sort.strong_sort import StrongSORT
 from trackers.ocsort.ocsort import OCSort
-from trackers.bytetrack.byte_tracker import BYTETracker
+# from trackers.bytetrack.byte_tracker import BYTETracker
 
 
 def create_tracker(tracker_type, appearance_descriptor_weights, device, half):
