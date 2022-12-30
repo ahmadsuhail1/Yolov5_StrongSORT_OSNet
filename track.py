@@ -37,7 +37,7 @@ from yolov5.utils.general import (LOGGER, Profile, check_img_size, non_max_suppr
                                   check_imshow, xyxy2xywh, increment_path, strip_optimizer, colorstr, print_args, check_file)
 from yolov5.utils.torch_utils import select_device, time_sync
 from yolov5.utils.plots import Annotator, colors, save_one_box
-from utils.segment.general import masks2segments, process_mask, process_mask_native
+# from utils.segment.general import masks2segments, process_mask, process_mask_native
 from trackers.multi_tracker_zoo import create_tracker
 
 
@@ -77,6 +77,8 @@ def run(
         retina_masks=False,
 ):
 
+    person_count_array = []
+    person_count = 0
     source = str(source)
     save_img = not nosave and not source.endswith('.txt')  # save inference images
     is_file = Path(source).suffix[1:] in (VID_FORMATS)
@@ -225,7 +227,15 @@ def run(
                         id = output[4]
                         cls = output[5]
                         conf = output[6]
-
+                        
+                        c = int(cls)  # integer class
+                        id = int(id)  # integer id
+                                
+                                
+                        if (id not in person_count_array) and c==0:
+                            person_count_array.append(id)
+                            person_count += 1
+                        
                         if save_txt:
                             # to MOT format
                             bbox_left = output[0]
@@ -258,6 +268,8 @@ def run(
                 
             # Stream results
             im0 = annotator.result()
+            im0 = cv2.putText(im0, "Total Person Count: {}".format(person_count), (0,45), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,255),2)
+                                
             if show_vid:
                 if platform.system() == 'Linux' and p not in windows:
                     windows.append(p)
