@@ -232,7 +232,7 @@ def run(
                         id = int(id)  # integer id
                                 
                                 
-                        if (id not in person_count_array) and c==0:
+                        if c==0 and (id not in person_count_array):
                             person_count_array.append(id)
                             person_count += 1
                         
